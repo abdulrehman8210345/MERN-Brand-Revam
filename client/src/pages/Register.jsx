@@ -1,16 +1,49 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/Register.css"
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/Register.css";
+import axios from "axios";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/register",
+        { name, email, password, userType },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // console.log(res.data);
+
+      if (res.data.success) {
+        if (userType === "vendor") {
+          navigate("/vendor/dashboard");
+        }
+        if (userType === "customer") {
+          navigate("/customer/dashboard");
+        }
+
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("registration failed", error);
+    } finally {
+      setName("");
+      setEmail("");
+      setPassword("");
+      setUserType("");
+    }
   };
 
   return (

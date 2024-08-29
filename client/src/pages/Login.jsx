@@ -1,33 +1,49 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import "../styles/Login.css"
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/Login.css";
 import axios from "axios";
 
 const Login = () => {
-
-//     const cookieString = document.cookie;
-//     const cookies = cookieString.split("; ")
-//     const authTokenCookie = cookies.find(cookie => cookie.startsWith("authToken="));
-
-//     console.log(authTokenCookie);
-
-//   if (authTokenCookie) {
-//     // Extract the value of the authToken
-//     const authToken = authTokenCookie.split("=")[1];
-//     // return authToken;
-//     console.log(authToken);
-//   }
-
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
 
+  const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await axios.post("http://localhost:5000/api/auth/login",{email,password,userType})
-    
-    
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password, userType },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(res.data);
+
+      if (res.data.success) {
+        if (userType === "vendor") {
+          navigate("/vendor/dashboard");
+        }
+        if (userType === "customer") {
+          navigate("/customer/dashboard");
+        }
+
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log("login failed", error);
+    } finally {
+      setEmail("");
+      setPassword("");
+      setUserType("");
+    }
   };
 
   return (
