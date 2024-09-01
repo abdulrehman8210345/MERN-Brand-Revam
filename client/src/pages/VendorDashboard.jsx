@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/VendorDashboard.css";
 
 const VendorDashboard = () => {
   const [vendorJobs, setVendorJobs] = useState([]);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVendorJobs = async () => {
@@ -15,23 +17,49 @@ const VendorDashboard = () => {
             withCredentials: true,
           }
         );
-        setVendorJobs(res.data.jobs); // Adjust this line if the response structure is different
+        if (res.data.success) {
+          setVendorJobs(res.data.myJobs); // Ensure this matches your response structure
+        } else {
+          setError("Failed to fetch jobs");
+        }
       } catch (error) {
-        console.log("Failed to fetch jobs", error);
+        setError("Failed to fetch jobs");
+        console.error("Failed to fetch jobs", error);
       }
     };
 
     fetchVendorJobs();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await axios.get(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userType");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <div className="vendor-dashboard-container">
-      <h2>Dashboard</h2>
+      <div className="header">
+        <h2>Dashboard</h2>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
+      </div>
       <h3>All Jobs</h3>
       <Link to="/vendor/dashboard/post" className="post-job-button">
         Post
       </Link>
       <div className="jobs-list">
+        {error && <p>{error}</p>}
         {vendorJobs.length === 0 ? (
           <p>No job posted</p>
         ) : (
@@ -40,10 +68,10 @@ const VendorDashboard = () => {
               <h4>{job.title}</h4>
               <p>{job.description}</p>
               <Link
-                to={`/vendor/dashboard/job/${job._id}`}
-                className="view-job-link"
+                to={`/vendor/dashboard/edit/${job._id}`}
+                className="edit-job-link"
               >
-                View Job
+                Edit Job
               </Link>
             </div>
           ))

@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import axios from "axios";
-
+import toast from "react-hot-toast"
+import useAuthHook from "../hooks/useAuthHook";
 const Login = () => {
+
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("");
 
   const navigate = useNavigate();
+
+  useAuthHook();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -26,17 +30,21 @@ const Login = () => {
       );
 
       console.log(res.data);
+      if(res.data.success){
+        localStorage.setItem("authToken",res.data.token);
+        localStorage.setItem("userType",res.data.user.userType);
+        localStorage.setItem("userId",res.data.user._id);
+      }
 
-      if (res.data.success) {
-        if (userType === "vendor") {
+      
+        if (res.data.user.userType === "vendor") {
           navigate("/vendor/dashboard");
         }
-        if (userType === "customer") {
+        if (res.data.user.userType === "customer") {
           navigate("/customer/dashboard");
         }
 
-        toast.success(res.data.message);
-      }
+          toast.success(res.data.message);
     } catch (error) {
       console.log("login failed", error);
     } finally {

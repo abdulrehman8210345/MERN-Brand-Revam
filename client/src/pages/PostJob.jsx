@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../styles/PostJob.css";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const PostJob = () => {
   const [title, setTitle] = useState("");
@@ -12,7 +13,7 @@ const PostJob = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/vendor/post",
+        "http://localhost:5000/api/vendor/dashboard/post",
         { title, description },
         {
           withCredentials: true,
@@ -27,7 +28,7 @@ const PostJob = () => {
     } catch (error) {
       console.log("Failed to post job", error);
     } finally {
-      toast.success(res.data.message);
+      // toast.success(res.data.message);
       setTitle("");
       setDescription("");
     }

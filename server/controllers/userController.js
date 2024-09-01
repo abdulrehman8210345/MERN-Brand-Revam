@@ -29,13 +29,15 @@ export const register = async (req, res) => {
     password: hashedPassword,
     userType,
   });
+  const userObject = user.toObject();
+  delete userObject.password;
 
   //to generate token and set cookie
 
   setCookie(
     req,
     res,
-    user,
+    userObject,
     user._id,
     `${user.userType} registered successfully`
   );
@@ -68,13 +70,15 @@ export const login = async (req, res) => {
   if (!isPasswordCorrect) {
     return res.status(400).json({ message: "Invalid email or password" });
   }
+  const userObject = isUserExist.toObject();
+  delete userObject.password;
 
   //to generate token and set cookie
 
   setCookie(
     req,
     res,
-    isUserExist,
+    userObject,
     isUserExist._id,
     `${isUserExist.userType} login successfully`
   );

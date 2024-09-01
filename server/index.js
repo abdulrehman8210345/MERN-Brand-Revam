@@ -29,8 +29,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", userRouter);
-app.use("/api/customer/dashborad",auth,authorizeRole("customer"),customerRoute);
-app.use("/api/vendor/dashborad",auth,authorizeRole("vendor"),vendorRoute);
+app.use("/api/customer/dashboard",auth,authorizeRole("customer"),customerRoute);
+app.use("/api/vendor/dashboard",auth,authorizeRole("vendor"),vendorRoute);
 connectDb();
 
 app.listen(process.env.PORT, () => {

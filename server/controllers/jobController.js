@@ -67,3 +67,26 @@ export const updateJob = async (req, res) => {
       .json({ success: false, message: "Failed to update job", error });
   }
 };
+
+export const jobDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findById(id);
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Job details",
+      job,
+    });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to update job", error });
+  }
+};

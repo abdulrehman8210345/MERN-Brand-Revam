@@ -5,6 +5,7 @@
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative; 
 }
 
 h1,
@@ -35,4 +36,32 @@ h2 {
 
 .job-card p {
   color: #666666;
+}
+
+
+.logout-button-container {
+  /* background-color: #4C/AF50; */
+  padding: 2px;
+  position: absolute;
+  right: 20px; 
+  top: 20px; 
+}
+
+/* Style for the logout button */
+.logout-button {
+  background-color: white;
+  color: #4CAF50;
+  border: none;
+  padding: 5px 10px; /* Shorten the button */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px; /* Smaller font size */
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.logout-button:hover {
+  background-color: #45a049;
+  color: white;
 }
